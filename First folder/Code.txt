@@ -1,0 +1,105 @@
+import java.util.ArrayList;
+import com.opensymphony.xwork2.ActionSupport;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ListIterator;
+import teacherdatabase.ViewTeacherDatabase;
+/** 
+*
+* @author Abhishek
+*/
+public class ViewTeacher extends ActionSupport{
+    ArrayList<ViewTeacherDatabase> al=new ArrayList();
+    public ArrayList getAl() {
+        return al;
+    }
+    public void setAl(ArrayList al) {
+        this.al = al;
+    }
+    @Override
+    public String execute() throws ClassNotFoundException, SQLException
+    {
+        Connection connection=null;
+        try
+        {
+		//make connection
+		connection = TeacherConnection.getConnection();
+		ViewTeacherDatabase vtdb;
+		String str= "select * from teacher"; 
+		PreparedStatement ps = connection.prepareStatement(str); 
+		ResultSet rs =ps.executeQuery();
+		while(rs.next())
+		{
+		vtdb=new ViewTeacherDatabase();
+		vtdb.setTeacher_id(rs.getString(1));
+		vtdb.setTeacher_firstname(rs.getString(2));
+		al.add(vtdb);
+		}
+		ListIterator itr=al.listIterator();
+		        while(itr.hasNext())
+		{
+            System.out.println(itr.next());
+        }
+        }
+	 catch(Exception e)
+	    {
+	        e.printStackTrace();
+	        return "error";
+	    }
+}
+}
+
+
+
+
+
+
+
+package teacherdatabase;
+public class ViewTeacherDatabase {
+    private String teacher_id;
+    private String teacher_firstname;
+    //getter and setter..
+}
+
+
+
+
+
+
+
+<table border="1">
+	<t:iterator value="al" status="alStatus" >
+		<tr>
+			 <td><t:property value="%{teacher_id}"/></td>
+			 <td><t:property value="%{teacher_firstname}"/></td>
+			 <td><t:property value="%{teacher_lastname}"/></td>
+			 <td><t:property value="%{teacher_gender}"/></td>
+			 <td><t:property value="%{teacher_address}"/></td>
+			 <td><t:property value="%{teacher_phone}"/></td>
+			 <td><t:property value="%{teacher_email}"/></td>
+			 <td><t:property value="%{teacher_alternateemail}"/></td>
+		 </tr>
+	</t:iterator>
+</table>
+
+
+
+
+
+
+
+
+
+<action name="actionpersonalDetails" class="teacheraction.ViewTeacher">
+        <result name="success">teacher/personalDetails.jsp</result>
+        <result name="error">error/error.jsp</result>
+</action>
+
+<action name="actionpersonalDetails" class="teacheraction.ViewTeacher">
+        <result name="success">teacher/personalDetails.jsp</result>
+        <result name="error">error/error.jsp</result>
+</action>
